@@ -21,10 +21,10 @@ Instructor will generate modules and labs for education. there is a shared data 
 
 The current development is here at 
 
-[Ropsten]()
-[Kovan]()
-[Mainnet]()
-[Parity Substrate]()
+[Ropsten]() 
+[Kovan]() 
+[Mainnet]() 
+[Parity Substrate]()  
 
 
 Here is the course that supports it.
