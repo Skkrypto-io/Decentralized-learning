@@ -24,7 +24,7 @@ contract Course {
         bytes32 ipfs;
         address certified; 
     }
-    mapping(address => Certificate[]) public honors;
+    mapping(address => Certificate) public honors;
     
     
     /// Create a new course with certificate corresponding to the module
@@ -54,15 +54,16 @@ contract Course {
     function certify(address learner, bytes32 id) public {
         require(msg.sender == manager && keccak256(abi.encodePacked(class[learner])) == keccak256(abi.encodePacked("registered")));
         string memory certificate_id = string(abi.encodePacked(course_id, "-", id));
-        class[learner] = certificate_id;
-        honors[learner].push(Certificate(certificate_id, data, learner));
+        class[learner] = "certified";
+        honors[learner] = Certificate(certificate_id, data, learner);
         emit Certified(learner, course_id);
     }
     
     
     function addModule(bytes32 module_id, bytes32 ipfs) public {
         require(msg.sender == manager);
-        address[] memory instructors = new address[](members);
+        // 1 for the manager
+        address[] memory instructors = new address[](members + 1);
         modules[module_id] = Module(instructors, module_id, ipfs);
         emit ModuleAdded(manager, module_id);
     }
@@ -72,6 +73,7 @@ contract Course {
         delete modules[module_id];
         emit ModuleRemoved(manager, module_id);
     }
+    
     
     function isInstructor(address instructor, bytes32 module_id) public view returns (bool result) {
         Module memory module = modules[module_id];
