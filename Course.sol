@@ -1,34 +1,34 @@
-pragma solidity >=0.4.22 <0.6.0;
+pragma solidity 0.5.11;
 
 
 contract Course {
     // Core 
     address public manager;
-    bytes32 public data;
-    bytes32 public course_id;
+    string public data;
+    string public course_id;
     mapping(address => string) public class;
-    mapping(bytes32 => Module) public modules;
+    mapping(string => Module) public modules;
     uint256 public members;
     uint256 public current;
     
     // Module
     struct Module {
         address[] instructors;
-        bytes32 id;
-        bytes32 ipfs;
+        string id;
+        string ipfs;
     }
     
     // Certification data models
     struct Certificate {
         string id;
-        bytes32 ipfs;
+        string ipfs;
         address certified; 
     }
     mapping(address => Certificate) public honors;
     
     
     /// Create a new course with certificate corresponding to the module
-    constructor(bytes32 id, bytes32 ipfs, uint256 limit) public {
+    constructor(string memory id, string memory ipfs, uint256 limit) public {
         manager = msg.sender;
         data = ipfs;
         course_id = id;
@@ -60,7 +60,7 @@ contract Course {
     }
     
     
-    function addModule(bytes32 module_id, bytes32 ipfs) public {
+    function addModule(string memory module_id, string memory ipfs) public {
         require(msg.sender == manager);
         // 1 for the manager
         address[] memory instructors = new address[](members + 1);
@@ -68,14 +68,14 @@ contract Course {
         emit ModuleAdded(manager, module_id);
     }
     
-    function removeModule(bytes32 module_id) public {
+    function removeModule(string memory module_id) public {
         require(msg.sender == manager);
         delete modules[module_id];
         emit ModuleRemoved(manager, module_id);
     }
     
     
-    function isInstructor(address instructor, bytes32 module_id) public view returns (bool result) {
+    function isInstructor(address instructor, string memory module_id) public view returns (bool result) {
         Module memory module = modules[module_id];
         address[] memory instructors = module.instructors;
         uint256 arrayLength = instructors.length;
@@ -91,7 +91,7 @@ contract Course {
         }
     }
     
-    function setInstructor(address learner, bytes32 module_id) public {
+    function setInstructor(address learner, string memory module_id) public {
         require(msg.sender == manager || isInstructor(msg.sender, module_id));
         modules[module_id].instructors.push(learner);
         emit SetInstructor(learner, module_id);
@@ -105,12 +105,12 @@ contract Course {
     
     
     // Events
-    event Registered(address learner, bytes32 course_id, uint256 current);
-    event Deregistered(address learner, bytes32 course_id, uint256 current);
-    event SetInstructor(address instructor, bytes32 module_id);
-    event Certified(address learner, bytes32 course);
-    event ModuleAdded(address manager, bytes32 module_id);
-    event ModuleRemoved(address manager, bytes32 module_id);
+    event Registered(address learner, string course_id, uint256 current);
+    event Deregistered(address learner, string course_id, uint256 current);
+    event SetInstructor(address instructor, string module_id);
+    event Certified(address learner, string course_id);
+    event ModuleAdded(address manager, string module_id);
+    event ModuleRemoved(address manager, string module_id);
     event NewManager(address previousManager, address newManager);
 }
 
